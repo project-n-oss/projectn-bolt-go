@@ -25,16 +25,13 @@ func New(p client.ConfigProvider, cfgs ...*aws.Config) *s3.S3 {
 
 func Region(p client.ConfigProvider) string {
 
-	ec2Md := ec2metadata.New(p)
-
-	region, err := ec2Md.Region()
-	if err != nil {
-		return ""
-	}
-
+	region := os.Getenv("AWS_REGION")
 	if len(region) > 0 {
 		return region
 	} else {
-		return os.Getenv("AWS_REGION")
+		ec2Md := ec2metadata.New(p)
+
+		region, _ := ec2Md.Region()
+		return region
 	}
 }
